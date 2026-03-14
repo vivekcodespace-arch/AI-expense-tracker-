@@ -14,7 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/expense-tracker', {
+mongoose.connect(process.env.MONGODB_HOST, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {

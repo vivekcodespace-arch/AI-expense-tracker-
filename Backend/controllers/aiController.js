@@ -15,7 +15,7 @@ export const chatWithAI = async (req, res) => {
     );
 
     const reply = result.messages.at(-1).content;
-    res.json({ reply });
+    res.json({ response: reply });
   } catch (error) {
     if (error.status === 429) {
       const retryAfter = error.errorDetails
