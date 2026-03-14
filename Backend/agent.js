@@ -1,5 +1,5 @@
 import { createAgent } from "langchain";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
 import { ConsoleCallbackHandler } from "@langchain/core/tracers/console";
 import {
   getExpensesTool,
@@ -13,11 +13,11 @@ import {
 import dotenv from "dotenv";
 dotenv.config();
 
-const llm = new ChatGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_API_KEY,
-  model: "gemini-2.0-flash-lite",
-  temperature: 0,
-  callbacks: [new ConsoleCallbackHandler()]  // logs LLM calls
+
+const llm = new ChatGroq({
+  apiKey: process.env.GROQ_API_KEY,
+  model: "llama-3.3-70b-versatile",  // correct Groq model
+  temperature: 0
 });
 
 export const agentExecutor = createAgent({
