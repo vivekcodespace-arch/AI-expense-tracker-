@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 
 export default function BudgetPage() {
@@ -11,6 +11,23 @@ export default function BudgetPage() {
   });
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [budgets, setBudgets] = useState<any[]>([]);
+  const [loadingBudgets, setLoadingBudgets] = useState(true);
+
+  useEffect(() => {
+    fetchBudgets();
+  }, []);
+
+  const fetchBudgets = async () => {
+    try {
+      const data = await api.getBudget();
+      setBudgets(data.budget);
+    } catch (error) {
+      console.error('Error fetching budgets:', error);
+    } finally {
+      setLoadingBudgets(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +41,7 @@ export default function BudgetPage() {
       setMessage('Budget set successfully!');
       setFormData({ startDate: '', endDate: '', amount: '' });
       setTimeout(() => setMessage(''), 3000);
+      fetchBudgets();
     } catch (error) {
       console.error('Error setting budget:', error);
       setMessage('Error setting budget. Please try again.');
@@ -56,7 +74,7 @@ export default function BudgetPage() {
                   type="date"
                   value={formData.startDate}
                   onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm text-gray-800"
                   required
                 />
               </div>
@@ -66,7 +84,7 @@ export default function BudgetPage() {
                   type="date"
                   value={formData.endDate}
                   onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm text-gray-800"
                   required
                 />
               </div>
@@ -78,7 +96,7 @@ export default function BudgetPage() {
                 placeholder="Enter your budget amount"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm text-lg"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm text-lg text-gray-800"
                 required
                 min="0"
                 step="0.01"
@@ -107,6 +125,43 @@ export default function BudgetPage() {
                 : 'bg-green-100 text-green-700 border border-green-200'
             } animate-slide-down`}>
               {message}
+            </div>
+          )}
+        </div>
+
+        {/* View Budgets */}
+        <div className="mt-8 bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-white/20 animate-fade-in">
+          <div className="text-center mb-6">
+            <div className="text-6xl mb-4">📊</div>
+            <h2 className="text-2xl font-semibold text-gray-800">Your Budgets</h2>
+          </div>
+
+          {loadingBudgets ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto"></div>
+              <p className="text-gray-600 mt-4">Loading budgets...</p>
+            </div>
+          ) : budgets.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600">No budgets set yet. Create your first budget above!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {budgets.map((budget, index) => (
+                <div key={index} className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl border border-purple-100">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        Budget Period: {new Date(budget.startDate).toLocaleDateString()} - {new Date(budget.endDate).toLocaleDateString()}
+                      </h3>
+                      <p className="text-gray-600 mt-1">Amount: <span className="font-medium text-purple-600">${budget.amount}</span></p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl">🎯</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

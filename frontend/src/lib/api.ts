@@ -57,7 +57,10 @@ export const api = {
     return res.json();
   },
 
-  // AI
+  getBudget: async (): Promise<{ budget: any[] }> => {
+    const res = await fetch(`${API_BASE_URL}/budget`);
+    return res.json();
+  },
   chatWithAI: async (message: string): Promise<{ response: string; intermediateSteps?: any[] }> => {
     const res = await fetch(`${API_BASE_URL}/ai/chat`, {
       method: 'POST',

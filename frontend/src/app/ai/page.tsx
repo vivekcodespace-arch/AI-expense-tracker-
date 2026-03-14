@@ -135,7 +135,7 @@ export default function AIPage() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Ask me about your finances..."
-                className="flex-1 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                className="flex-1 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm text-gray-800"
                 disabled={loading}
               />
               <button
