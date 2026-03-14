@@ -2,6 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -24,10 +27,12 @@ mongoose.connect('mongodb://localhost:27017/expense-tracker', {
 import expenseRoutes from './routes/expenses.js';
 import walletRoutes from './routes/wallet.js';
 import budgetRoutes from './routes/budget.js';
+import aiRoutes from './routes/ai.js';
 
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/budget', budgetRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Start server
 app.listen(PORT, () => {
