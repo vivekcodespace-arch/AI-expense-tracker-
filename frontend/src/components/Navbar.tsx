@@ -2,9 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const Navbar = () => {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    // Close mobile nav when route changes
+    setIsOpen(false);
+  }, [pathname]);
 
   const navItems = [
     { href: '/', label: 'Home', icon: '🏠' },
@@ -42,7 +49,13 @@ const Navbar = () => {
           </div>
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <button className="text-gray-700 hover:text-indigo-600 p-2">
+            <button
+              className="text-gray-700 hover:text-indigo-600 p-2"
+              onClick={() => setIsOpen((prev) => !prev)}
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+              aria-label="Toggle navigation menu"
+            >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -50,6 +63,30 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {isOpen && (
+        <div id="mobile-menu" className="md:hidden bg-white/90 border-b border-white/20 shadow-lg">
+          <div className="px-4 pt-2 pb-3 space-y-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`block px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  pathname === item.href
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-indigo-600'
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="inline-flex items-center gap-2">
+                  <span>{item.icon}</span>
+                  <span>{item.label}</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
